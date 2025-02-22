@@ -118,5 +118,4 @@ I will use QGIS, an open-source tool that interacts with databases via the DB Ma
 * **`Data/Processed/half_hour_starttime_count.csv`:** Contains the results after executing SQL queries in QGIS DB Manager ensuring the columns are suitable for visualization (e.g., time intervals, counts, geometries).
 * **`QGIS_Project/spatio_temporal_analysis.qgs`:** The QGIS project file, is pre-configured to visualize the analysis results.
 * **`Data_Visualization/visualization.py`:** Python script for generating additional visualizations based on the `analysis_results.csv` file.
-* **QGIS DB Manager:** Use the DB Manager plugin to run the SQL queries and manage your PostGIS data.
-* **Docs/report.md (Detailed Report):** Focuses on overall project workflow with Focus on the QGIS/PostGIS workflow, Show screenshots of your QGIS project and DB Manager queries, Explain the SQL queries and their purpose, Describe the visualization process in QGIS, Explain the python visualizations and why they were created.
+* **`Docs/report.md (Detailed Report)`:** Focuses on overall project workflow with Focus on the QGIS/PostGIS workflow, Show screenshots of your QGIS project and DB Manager queries, Explain the SQL queries and their purpose, Describe the visualization process in QGIS, Explain the python visualizations and why they were created.
