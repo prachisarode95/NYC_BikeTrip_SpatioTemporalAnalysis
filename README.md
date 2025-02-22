@@ -1,4 +1,4 @@
-# NYC Bike Trip Spatio-Temporal Analysis (QGIS/PostGIS Focused)
+# 1. NYC Bike Trip Spatio-Temporal Analysis (QGIS/PostGIS Focused)
 
 This repository documents the analysis of spatio-temporal patterns in New York City bike trip data using QGIS, PostGIS, and SQL. The analysis focuses on leveraging the QGIS DB Manager plugin to run PostGIS queries and visualize the results directly within QGIS.
 
@@ -82,6 +82,33 @@ The data used in this project is [mention the source of the data, e.g., NYC Open
         ```bash
         python scripts/visualization.py
         ```
+
+# 2. requirements.txt (Minimal Python Dependencies)
+pandas
+matplotlib
+
+# 3. data/processed/analysis_results.csv (CSV Output)
+This file will contain the results of your SQL queries executed in QGIS DB Manager.
+Ensure the CSV has columns suitable for visualization (e.g., time intervals, counts, geometries).
+
+# 4. qgis_project/postgis_queries.sql (SQL Queries)
+-- Example queries (adjust to your actual analysis and explain each query regarding the problem)
+
+# 5. qgis_project/nyc_bike_trips.qgs (QGIS Project)
+Import the PostGIS table and the analysis_results.csv into the QGIS project.
+Style the layers to visualize the spatio-temporal patterns (e.g., heatmaps, graduated symbols, time series plots).
+Use the DB Manager to connect to the PostGIS database.
+Save the QGIS project.
+
+# 6. scripts/visualization.py (Python Visualization)
+This will include python script and explanation on the result
+
+# 7. docs/report.md (Detailed Report)
+- Focus on the QGIS/PostGIS workflow.
+- Show screenshots of your QGIS project and DB Manager queries.
+- Explain the SQL queries and their purpose.
+- Describe the visualization process in QGIS.
+- Explain the python visualisations and why they were created.
 
 ## Usage
 
