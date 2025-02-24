@@ -1,8 +1,6 @@
-# Temporal operations for geospatial operations
+# Temporal operations
 
 ## Data explorations with SQL (Referred to 1.sql file)
-
-### Steps
 
 1.  **Check for PostGIS Extension:**
 
@@ -112,8 +110,6 @@ This section provides SQL queries used to analyze the bike share data, along wit
 
 This section describes SQL queries used to modify the `trip_data` table to add a column representing the half-hour start time interval.
 
-### Table Modification
-
 1.  **Add `half_hour_starttime` Column:**
 
     ```sql
@@ -149,9 +145,9 @@ This section describes SQL queries used to modify the `trip_data` table to add a
 
     This query demonstrates how the `DATE_TRUNC('hour', ...)` function works, showing the truncated hour portion of the `start_time`.
 
-# Spatial operations in geospatial analysis (Referred to 4.sql)
+# Spatial operations
 
- ## Reproject census tract boundary geometry with postgis 
+ ## Reproject census tract boundary geometry with postgis  (Referred to 4.sql)
  This section details an SQL query used to analyze bike usage patterns throughout the day, focusing on peak usage times.
 
 **Goal:** Understand the bike usage throughout the day.
@@ -188,7 +184,9 @@ using ST_Transform(ST_SetSRID(wkb_geometry,4326), 32618);
 
 ## Spatial analysis: analyzing patterns with spatial join (Referred to 6.sql)
 
-## Transforming Station Data to Geospatial Format
+
+
+## Transforming Station Data to Geospatial Format (Referred to 7.sql)
 This section describes SQL queries used to convert station latitude and longitude data into a geospatial format (Point geometry) and transform it to the UTM Zone 18N projection (EPSG: 32618).
 
 ### Geospatial Transformation Queries
@@ -211,9 +209,10 @@ ADD COLUMN geom geometry(Point, 4326);
  
  ## Creating a choropleth map in qgis (explain how i created a choropleth map using qgis interface)
  
- ## Spatial analysis: identifying nearby stations with a  buffer (Referred to 9.sql)
+ ## Spatial analysis: identifying nearby stations with a  buffer (Referred to 8.sql)
 
-  ## Optimizing Van Routes for Bike Station Replenishment
+
+ ## Optimizing Van Routes for Bike Station Replenishment (Referred to 9.sql)
 
   This section provides SQL queries to optimize van routes for replenishing bike stations, focusing on identifying stations within a 1km radius of the top 3 busiest stations.
 
@@ -276,9 +275,9 @@ ORDER BY top_station_id;
 -- It returns the station_id of the nearby stations and the top_station_id they are near.
 ```
 
-# Spatio-temporal analysis and visualization (Referred to 10.sql)
+# Spatio-temporal analysis and visualization 
 
-## Spatio-Temporal Trip Data Analysis
+## Spatio-Temporal Trip Data Analysis (Referred to 10.sql)
 
 This section explains an SQL query used to group trip data by both temporal (half-hour intervals) and spatial (census tracts) dimensions.
 
