@@ -1,6 +1,6 @@
-# Temporal operations for geospatial operations (add sql queries with each explained)
+# Temporal operations for geospatial operations
 
-## Data explorations with SQL (Refer 1.sql file)
+## Data explorations with SQL (Refer to 1.sql file)
 
 ### Steps
 
@@ -58,14 +58,10 @@ These SQL queries can be executed using any PostgreSQL client, such as `psql` or
 **Example using `psql`:**
 
 ```bash
-psql -U your_username -d your_database -f setup_database.sql
+psql -U your_username -d your_database -f 1.sql
 ```
 
-## Time-based analysis grouping trips by half-hour intervals (Refer 2.sql file)
-
-# Project Name (Replace with your project's name)
-
-## Database Queries and Analysis
+## Time-based analysis grouping trips by half-hour intervals (Refer to 2.sql file)
 
 This section provides SQL queries used to analyze the bike share data, along with explanations of the questions they answer.
 
@@ -73,7 +69,7 @@ This section provides SQL queries used to analyze the bike share data, along wit
 
 **Using `public.stations` Table**
 
-1.  **Question 1: How many stations does BigApple BikeShare company have?**
+  **Question 1: How many stations does BigApple BikeShare company have?**
 
     ```sql
     select count(*) as station_count
@@ -84,7 +80,7 @@ This section provides SQL queries used to analyze the bike share data, along wit
 
 **Using `public.trip_data` Table**
 
-1.  **Question 2: How many trips were taken on September 17th?**
+  **Question 2: How many trips were taken on September 17th?**
 
     ```sql
     select count(*) as trip_count
@@ -94,7 +90,7 @@ This section provides SQL queries used to analyze the bike share data, along wit
 
     This query counts the number of trips that started on September 17th, 2024. It filters the `trip_data` table based on the `start_time` column, casting it to a date for comparison. The result is aliased as `trip_count`.
 
-2.  **Question 3: What percentage of bike trips used an e-bike?**
+  **Question 3: What percentage of bike trips used an e-bike?**
 
     ```sql
     select
@@ -104,7 +100,7 @@ This section provides SQL queries used to analyze the bike share data, along wit
 
     This query calculates the percentage of trips made using e-bikes. It uses a `CASE` statement to count the number of trips where `bike_type` is 'ebike', then divides that count by the total number of trips and multiplies by 100.0 to get the percentage. The result is aliased as `ebike_percentage`.
 
-3.  **Question 4: Which bike station had the most starting trips on that day?**
+  **Question 4: Which bike station had the most starting trips on that day?**
 
     ```sql
     select start_station_id, count(ride_id) as trip_count
@@ -116,7 +112,7 @@ This section provides SQL queries used to analyze the bike share data, along wit
 
     This query finds the station with the most starting trips. It groups trips by `start_station_id`, counts the number of trips per station, orders the results in descending order of trip count, and then uses `LIMIT 1` to retrieve only the top station. The trip count is aliased as `trip_count`.
 
-4.  **Question 5: What’s the average length of a bike trip?**
+  **Question 5: What’s the average length of a bike trip?**
 
     ```sql
     select avg(end_time::timestamp - start_time::timestamp) as avg_trip_duration
@@ -125,10 +121,6 @@ This section provides SQL queries used to analyze the bike share data, along wit
 
     This query calculates the average duration of bike trips. It subtracts the `start_time` from the `end_time`, casting both to timestamps, and then calculates the average of the resulting durations using the `AVG()` function. The result is aliased as `avg_trip_duration`.
 
-### Usage
-
-These SQL queries can be executed using any PostgreSQL client, such as `psql` or pgAdmin.
-
 **Example using `psql`:**
 
 ```bash
@@ -136,10 +128,6 @@ psql -U your_username -d your_database -f 2.sql
 ```
 
 ## Time-based analysis analyzing patterns by time of the day
-
-# Project Name (Replace with your project's name)
-
-## Database Modifications
 
 This section describes SQL queries used to modify the `trip_data` table to add a column representing the half-hour start time interval.
 
@@ -180,19 +168,15 @@ This section describes SQL queries used to modify the `trip_data` table to add a
 
     This query demonstrates how the `DATE_TRUNC('hour', ...)` function works, showing the truncated hour portion of the `start_time`.
 
-### Usage
-
-These SQL queries can be executed using any PostgreSQL client, such as `psql` or pgAdmin.
-
 **Example using `psql`:**
 
 ```bash
 psql -U your_username -d your_database -f 3.sql
 ```
 
-# Spatial operations in geospatial analysis (add sql queries with each explained)
+# Spatial operations in geospatial analysis
 
- ## Reproject census tract boundary geometry with postgis (4.sql)
+ ## Reproject census tract boundary geometry with postgis (refer to 4.sql)
  This section details an SQL query used to analyze bike usage patterns throughout the day, focusing on peak usage times.
 
 **Goal:** Understand the bike usage throughout the day.
@@ -212,22 +196,18 @@ order by trip_count DESC;
 This query aims to identify the busiest half-hour intervals for bike trip starts.
 
 select half_hour_starttime, count(*) as trip_count: This part of the query selects the half_hour_starttime column, which represents the start time rounded to the nearest half-hour. It also counts the number of trips for each unique half_hour_starttime and aliases the count as trip_count.
-from public.trip_data: This specifies that the data is being retrieved from the trip_data table.
-group by half_hour_starttime: This groups the rows in the trip_data table based on the half_hour_starttime column. This allows the count(*) function to count the number of trips for each distinct half-hour interval.
-order by trip_count DESC: This orders the results in descending order based on the trip_count column. This means that the half-hour intervals with the highest number of trips will appear at the top of the result set.
-In essence, this query provides a ranked list of half-hour intervals, showing when bike trips are most frequently initiated.
 
-**Usage:**
-This SQL query can be executed using any PostgreSQL client, such as psql or pgAdmin.
+from public.trip_data: This specifies that the data is being retrieved from the trip_data table.
+
+group by half_hour_starttime: This groups the rows in the trip_data table based on the half_hour_starttime column. This allows the count(*) function to count the number of trips for each distinct half-hour interval.
+
+order by trip_count DESC: This orders the results in descending order based on the trip_count column. This means that the half-hour intervals with the highest number of trips will appear at the top of the result set. In essence, this query provides a ranked list of half-hour intervals, showing when bike trips are most frequently initiated.
+
 ```Bash
 psql -U your_username -d your_database -f bike_usage_peak_times.sql
 ```
 
 ## Creating geometric columns and defining projections (5.sql)
-# Project Name (Replace with your project's name)
-
-## Census Tract Boundary Transformation
-
 This section details an SQL query used to transform the geometry of census tract boundary data to the UTM Zone 18N projection (EPSG: 32618).
 
 ### Geometry Transformation Query
@@ -250,10 +230,12 @@ using ST_Transform(ST_SetSRID(wkb_geometry,4326), 32618);
 This query modifies the nyct2020 table to change the spatial reference system (SRID) of the wkb_geometry column to UTM Zone 18N (EPSG: 32618).
 
 alter table nyct2020 alter column wkb_geometry type geometry(MultiPolygon, 32618): This part of the query changes the data type of the wkb_geometry column to geometry(MultiPolygon, 32618). This specifies that the column will store MultiPolygon geometries with SRID 32618.
+
 using ST_Transform(ST_SetSRID(wkb_geometry, 4326), 32618): This part of the query uses the ST_Transform() and ST_SetSRID() functions to perform the projection transformation.
+
 ST_SetSRID(wkb_geometry, 4326): This sets the SRID of the existing wkb_geometry to 4326 (WGS 84), assuming the original data is in this SRID. If the original data is in a different SRID, you should change this value accordingly.
-ST_Transform(..., 32618): This transforms the geometry from SRID 4326 to SRID 32618 (UTM Zone 18N).
-In essence, this query reprojects the census tract boundary geometries from their original SRID (likely WGS 84) to the UTM Zone 18N projection.
+
+ST_Transform(..., 32618): This transforms the geometry from SRID 4326 to SRID 32618 (UTM Zone 18N). In essence, this query reprojects the census tract boundary geometries from their original SRID (likely WGS 84) to the UTM Zone 18N projection.
 
 **Usage:**
 This SQL query can be executed using any PostgreSQL client, such as psql or pgAdmin.
@@ -261,11 +243,9 @@ This SQL query can be executed using any PostgreSQL client, such as psql or pgAd
 psql -U your_username -d your_database -f 5.sql
 ```
 
-
 ## Spatial analysis: analyzing patterns with spatial join 
 
 ## Transforming Station Data to Geospatial Format
-
 This section describes SQL queries used to convert station latitude and longitude data into a geospatial format (Point geometry) and transform it to the UTM Zone 18N projection (EPSG: 32618).
 
 ### Geospatial Transformation Queries
@@ -289,11 +269,10 @@ ADD COLUMN geom geometry(Point, 4326);
  ## Creating a choropleth map in qgis (explain how i created a choropleth map using qgis interface)
  
  ## Spatial analysis: identifying nearby stations with a  buffer
-# Project Name (Replace with your project's name)
 
-## Optimizing Van Routes for Bike Station Replenishment
+  ## Optimizing Van Routes for Bike Station Replenishment
 
-This section provides SQL queries to optimize van routes for replenishing bike stations, focusing on identifying stations within a 1km radius of the top 3 busiest stations.
+  This section provides SQL queries to optimize van routes for replenishing bike stations, focusing on identifying stations within a 1km radius of the top 3 busiest stations.
 
 ```sql
 -- Business goal: optimize van routes for replenishing bike stations
