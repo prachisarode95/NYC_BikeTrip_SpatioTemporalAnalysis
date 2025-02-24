@@ -1,6 +1,6 @@
 # Temporal operations for geospatial operations
 
-## Data explorations with SQL (Refer to 1.sql file)
+## Data explorations with SQL (Referred to 1.sql file)
 
 ### Steps
 
@@ -50,7 +50,7 @@
     This creates the `trip_data` table to store trip details, including start and end times, station IDs, and bike types.
     ```
     
-## Time-based analysis grouping trips by half-hour intervals (Refer to 2.sql file)
+## Time-based analysis grouping trips by half-hour intervals (Referred to 2.sql file)
 
 This section provides SQL queries used to analyze the bike share data, along with explanations of the questions they answer.
 
@@ -108,7 +108,7 @@ This section provides SQL queries used to analyze the bike share data, along wit
 
     This query calculates the average duration of bike trips. It subtracts the `start_time` from the `end_time`, casting both to timestamps, and then calculates the average of the resulting durations using the `AVG()` function. The result is aliased as `avg_trip_duration`.
 
-## Time-based analysis analyzing patterns by time of the day
+## Time-based analysis analyzing patterns by time of the day (Referred to 3.sql)
 
 This section describes SQL queries used to modify the `trip_data` table to add a column representing the half-hour start time interval.
 
@@ -149,9 +149,9 @@ This section describes SQL queries used to modify the `trip_data` table to add a
 
     This query demonstrates how the `DATE_TRUNC('hour', ...)` function works, showing the truncated hour portion of the `start_time`.
 
-# Spatial operations in geospatial analysis
+# Spatial operations in geospatial analysis (Referred to 4.sql)
 
- ## Reproject census tract boundary geometry with postgis (refer to 4.sql)
+ ## Reproject census tract boundary geometry with postgis 
  This section details an SQL query used to analyze bike usage patterns throughout the day, focusing on peak usage times.
 
 **Goal:** Understand the bike usage throughout the day.
@@ -167,7 +167,7 @@ group by half_hour_starttime
 order by trip_count DESC;
 ```
 
-## Creating geometric columns and defining projections (5.sql)
+## Creating geometric columns and defining projections (Referred to 5.sql)
 This section details an SQL query used to transform the geometry of census tract boundary data to the UTM Zone 18N projection (EPSG: 32618).
 
 ### Geometry Transformation Query
@@ -186,7 +186,7 @@ alter column wkb_geometry type geometry(MultiPolygon, 32618)
 using ST_Transform(ST_SetSRID(wkb_geometry,4326), 32618);
 ```
 
-## Spatial analysis: analyzing patterns with spatial join 
+## Spatial analysis: analyzing patterns with spatial join (Referred to 6.sql)
 
 ## Transforming Station Data to Geospatial Format
 This section describes SQL queries used to convert station latitude and longitude data into a geospatial format (Point geometry) and transform it to the UTM Zone 18N projection (EPSG: 32618).
@@ -211,7 +211,7 @@ ADD COLUMN geom geometry(Point, 4326);
  
  ## Creating a choropleth map in qgis (explain how i created a choropleth map using qgis interface)
  
- ## Spatial analysis: identifying nearby stations with a  buffer
+ ## Spatial analysis: identifying nearby stations with a  buffer (Referred to 9.sql)
 
   ## Optimizing Van Routes for Bike Station Replenishment
 
@@ -276,7 +276,7 @@ ORDER BY top_station_id;
 -- It returns the station_id of the nearby stations and the top_station_id they are near.
 ```
 
-# Spatio-temporal analysis and visualization
+# Spatio-temporal analysis and visualization (Referred to 10.sql)
 
 ## Spatio-Temporal Trip Data Analysis
 
