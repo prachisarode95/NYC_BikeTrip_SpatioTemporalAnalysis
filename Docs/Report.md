@@ -45,9 +45,10 @@
         start_station_id VARCHAR(50),
         end_station_id VARCHAR(50)
     );
-    This creates the `trip_data` table to store trip details, including start and end times, station IDs, and bike types.
     ```
-    
+    This creates the `trip_data` table to store trip details, including start and end times, station IDs, and bike types.
+
+
 ## Time-based analysis grouping trips by half-hour intervals (Referred to 2.sql file)
 
 This section provides SQL queries used to analyze the bike share data, along with explanations of the questions they answer.
@@ -105,6 +106,7 @@ This section provides SQL queries used to analyze the bike share data, along wit
     ```
 
     This query calculates the average duration of bike trips. It subtracts the `start_time` from the `end_time`, casting both to timestamps, and then calculates the average of the resulting durations using the `AVG()` function. The result is aliased as `avg_trip_duration`.
+
 
 ## Time-based analysis analyzing patterns by time of the day (Referred to 3.sql)
 
