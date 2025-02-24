@@ -47,25 +47,12 @@
         start_station_id VARCHAR(50),
         end_station_id VARCHAR(50)
     );
-    ```
-
     This creates the `trip_data` table to store trip details, including start and end times, station IDs, and bike types.
-
-### Usage
-
-These SQL queries can be executed using any PostgreSQL client, such as `psql` or pgAdmin.
-
-**Example using `psql`:**
-
-```bash
-psql -U your_username -d your_database -f 1.sql
-```
-
+    ```
+    
 ## Time-based analysis grouping trips by half-hour intervals (Refer to 2.sql file)
 
 This section provides SQL queries used to analyze the bike share data, along with explanations of the questions they answer.
-
-### Data Analysis Queries
 
 **Using `public.stations` Table**
 
@@ -121,12 +108,6 @@ This section provides SQL queries used to analyze the bike share data, along wit
 
     This query calculates the average duration of bike trips. It subtracts the `start_time` from the `end_time`, casting both to timestamps, and then calculates the average of the resulting durations using the `AVG()` function. The result is aliased as `avg_trip_duration`.
 
-**Example using `psql`:**
-
-```bash
-psql -U your_username -d your_database -f 2.sql
-```
-
 ## Time-based analysis analyzing patterns by time of the day
 
 This section describes SQL queries used to modify the `trip_data` table to add a column representing the half-hour start time interval.
@@ -168,12 +149,6 @@ This section describes SQL queries used to modify the `trip_data` table to add a
 
     This query demonstrates how the `DATE_TRUNC('hour', ...)` function works, showing the truncated hour portion of the `start_time`.
 
-**Example using `psql`:**
-
-```bash
-psql -U your_username -d your_database -f 3.sql
-```
-
 # Spatial operations in geospatial analysis
 
  ## Reproject census tract boundary geometry with postgis (refer to 4.sql)
@@ -190,21 +165,6 @@ select half_hour_starttime, count(*) as trip_count
 from public.trip_data
 group by half_hour_starttime
 order by trip_count DESC;
-```
-**Explanation:**
-
-This query aims to identify the busiest half-hour intervals for bike trip starts.
-
-select half_hour_starttime, count(*) as trip_count: This part of the query selects the half_hour_starttime column, which represents the start time rounded to the nearest half-hour. It also counts the number of trips for each unique half_hour_starttime and aliases the count as trip_count.
-
-from public.trip_data: This specifies that the data is being retrieved from the trip_data table.
-
-group by half_hour_starttime: This groups the rows in the trip_data table based on the half_hour_starttime column. This allows the count(*) function to count the number of trips for each distinct half-hour interval.
-
-order by trip_count DESC: This orders the results in descending order based on the trip_count column. This means that the half-hour intervals with the highest number of trips will appear at the top of the result set. In essence, this query provides a ranked list of half-hour intervals, showing when bike trips are most frequently initiated.
-
-```Bash
-psql -U your_username -d your_database -f bike_usage_peak_times.sql
 ```
 
 ## Creating geometric columns and defining projections (5.sql)
@@ -224,23 +184,6 @@ This section details an SQL query used to transform the geometry of census tract
 alter table nyct2020
 alter column wkb_geometry type geometry(MultiPolygon, 32618)
 using ST_Transform(ST_SetSRID(wkb_geometry,4326), 32618);
-```
-**Explanation:**
-
-This query modifies the nyct2020 table to change the spatial reference system (SRID) of the wkb_geometry column to UTM Zone 18N (EPSG: 32618).
-
-alter table nyct2020 alter column wkb_geometry type geometry(MultiPolygon, 32618): This part of the query changes the data type of the wkb_geometry column to geometry(MultiPolygon, 32618). This specifies that the column will store MultiPolygon geometries with SRID 32618.
-
-using ST_Transform(ST_SetSRID(wkb_geometry, 4326), 32618): This part of the query uses the ST_Transform() and ST_SetSRID() functions to perform the projection transformation.
-
-ST_SetSRID(wkb_geometry, 4326): This sets the SRID of the existing wkb_geometry to 4326 (WGS 84), assuming the original data is in this SRID. If the original data is in a different SRID, you should change this value accordingly.
-
-ST_Transform(..., 32618): This transforms the geometry from SRID 4326 to SRID 32618 (UTM Zone 18N). In essence, this query reprojects the census tract boundary geometries from their original SRID (likely WGS 84) to the UTM Zone 18N projection.
-
-**Usage:**
-This SQL query can be executed using any PostgreSQL client, such as psql or pgAdmin.
-```Bash
-psql -U your_username -d your_database -f 5.sql
 ```
 
 ## Spatial analysis: analyzing patterns with spatial join 
@@ -333,28 +276,7 @@ ORDER BY top_station_id;
 -- It returns the station_id of the nearby stations and the top_station_id they are near.
 ```
 
-**Explanation of the Process:**
-
-These SQL queries are designed to help optimize van routes for replenishing bike stations. By identifying the busiest stations and finding nearby stations within a 1km radius, van routes can be planned more efficiently.
-
-Step 1 identifies the top 3 busiest stations based on starting trip counts.
-Step 2 creates a 1km buffer around each of these top stations.
-Step 3 performs a spatial join to find other stations that fall within these buffers, indicating stations that can be serviced along with the busiest ones.
-
-**Usage:**
-
-These queries can be executed in any PostgreSQL client like psql or pgAdmin. Ensure PostGIS is installed and enabled.
-
-Example using psql:
-
-``Bash
-psql -U your_username -d your_database -f optimize_routes.sql
-```
-
 # Spatio-temporal analysis and visualization
-
-## spatio -temporal analysis
-# Project Name (Replace with your project's name)
 
 ## Spatio-Temporal Trip Data Analysis
 
@@ -375,34 +297,6 @@ join public.stations on trip_data.start_station_id = stations.station_id
 join public.nyct2020 on ST_Within(stations.geom, nyct2020.wkb_geometry)
 group by half_hour_starttime, census_tract
 order by census_tract, half_hour_starttime;
-```
-
-**Explanation:**
-
-This query creates a new table named spatio_temporal_visualization that aggregates trip data by census tract and half-hour intervals.
-
-create table spatio_temporal_visualization as: This creates a new table with the results of the subsequent SELECT statement.
-select half_hour_starttime, nyct2020.id as census_tract, nyct2020.wkb_geometry as geom, count(trip_data.ride_id) as trip_count:
-half_hour_starttime: Selects the half-hour interval of the trip start time.
-nyct2020.id as census_tract: Selects the census tract ID from the nyct2020 table and aliases it as census_tract.
-nyct2020.wkb_geometry as geom: Selects the geometry of the census tract.
-count(trip_data.ride_id) as trip_count: Counts the number of trips (ride IDs) for each group and aliases it as trip_count.
-from public.trip_data join public.stations on trip_data.start_station_id = stations.station_id join public.nyct2020 on ST_Within(stations.geom, nyct2020.wkb_geometry):
-This performs a series of joins:
-Joins trip_data with stations on the start_station_id to link trips with station locations.
-Joins the result with nyct2020 (census tract data) using ST_Within(stations.geom, nyct2020.wkb_geometry). This spatially joins stations to census tracts, finding which census tract each station is located within.
-group by half_hour_starttime, census_tract: Groups the results by both half_hour_starttime and census_tract, so the count() function counts trips within each unique combination of these two dimensions.
-order by census_tract, half_hour_starttime: Orders the resulting table first by census tract and then by half-hour interval.
-In essence, this query creates a table that summarizes the number of bike trips originating from each census tract during each half-hour interval, enabling spatio-temporal analysis of bike usage.
-
-**Usage:**
-
-This SQL query can be executed using any PostgreSQL client, such as psql or pgAdmin.
-
-**Example using psql:**
-
-```Bash
-psql -U your_username -d your_database -f spatio_temporal_analysis.sql
 ```
 
 ## Visualize time series data in qgis with choropleth map
