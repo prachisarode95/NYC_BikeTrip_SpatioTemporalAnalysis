@@ -62,7 +62,7 @@ This section provides SQL queries used to analyze the bike share data, along wit
     from public.stations;
     ```
 
-    This query counts the total number of rows in the `stations` table, which represents the total number of bike stations. The result is aliased as `station_count`.
+  This query counts the total number of rows in the `stations` table, which represents the total number of bike stations. The result is aliased as `station_count`.
 
 **Using `public.trip_data` Table**
 
@@ -84,7 +84,7 @@ This section provides SQL queries used to analyze the bike share data, along wit
     from public.trip_data;
     ```
 
-    This query calculates the percentage of trips made using e-bikes. It uses a `CASE` statement to count the number of trips where `bike_type` is 'ebike', then divides that count by the total number of trips and multiplies by 100.0 to get the percentage. The result is aliased as `ebike_percentage`.
+ This query calculates the percentage of trips made using e-bikes. It uses a `CASE` statement to count the number of trips where `bike_type` is 'ebike', then divides that count by the total number of trips and multiplies by 100.0 to get the percentage. The result is aliased as `ebike_percentage`.
 
   **Question 4: Which bike station had the most starting trips on that day?**
 
@@ -96,7 +96,7 @@ This section provides SQL queries used to analyze the bike share data, along wit
     limit 1;
     ```
 
-    This query finds the station with the most starting trips. It groups trips by `start_station_id`, counts the number of trips per station, orders the results in descending order of trip count, and then uses `LIMIT 1` to retrieve only the top station. The trip count is aliased as `trip_count`.
+  This query finds the station with the most starting trips. It groups trips by `start_station_id`, counts the number of trips per station, orders the results in descending order of trip count, and then uses `LIMIT 1` to retrieve only the top station. The trip count is aliased as `trip_count`.
 
   **Question 5: What’s the average length of a bike trip?**
 
@@ -105,7 +105,7 @@ This section provides SQL queries used to analyze the bike share data, along wit
     from public.trip_data;
     ```
 
-    This query calculates the average duration of bike trips. It subtracts the `start_time` from the `end_time`, casting both to timestamps, and then calculates the average of the resulting durations using the `AVG()` function. The result is aliased as `avg_trip_duration`.
+ This query calculates the average duration of bike trips. It subtracts the `start_time` from the `end_time`, casting both to timestamps, and then calculates the average of the resulting durations using the `AVG()` function. The result is aliased as `avg_trip_duration`.
 
 
 ## Time-based analysis analyzing patterns by time of the day (Referred to 3.sql)
@@ -149,14 +149,12 @@ This section describes SQL queries used to modify the `trip_data` table to add a
 
 # Spatial operations
 
- ## Reproject census tract boundary geometry with postgis  (Referred to 4.sql)
+ ## Reproject census tract boundary geometry with PostGIS  (Referred to 4.sql)
  This section details an SQL query used to analyze bike usage patterns throughout the day, focusing on peak usage times.
 
 **Goal:** Understand the bike usage throughout the day.
 
 **Task:** Determine the times when the most bike trips start, listing these times in descending order from the busiest to the least busy, along with the corresponding bike trip counts.
-
-**Hint:** `GROUP BY()`, `ORDER BY()`
 
 ```sql
 select half_hour_starttime, count(*) as trip_count
@@ -186,33 +184,148 @@ using ST_Transform(ST_SetSRID(wkb_geometry,4326), 32618);
 
 ## Spatial analysis: analyzing patterns with spatial join (Referred to 6.sql)
 
+-- Goal: turn stations table into geospatial data format and set the correct projection
 
-
-## Transforming Station Data to Geospatial Format (Referred to 7.sql)
-This section describes SQL queries used to convert station latitude and longitude data into a geospatial format (Point geometry) and transform it to the UTM Zone 18N projection (EPSG: 32618).
-
-### Geospatial Transformation Queries
-
-**Hints:**
-
-* The spatial reference ID for WGS84 latitude and longitude is 4326.
-* The projection we would like to use for our project is UTM zone 18N (EPSG: 32618).
-* Working with projection `ST_Transform()` and `ST_SetSRID` - [https://postgis.net/documentation/tips/st-set-or-transform/](https://postgis.net/documentation/tips/st-set-or-transform/)
-
-**Goal:** Turn the `stations` table into a geospatial data format and set the correct projection.
-
-**Step 1: Add a new geometry column to the `stations` table**
-
-```sql
 -- Step 1: Add a new geometry column to the bike_stations table
-ALTER table public.stations
+
+```ALTER table public.stations
 ADD COLUMN geom geometry(Point, 4326);
 ```
- 
- ## Creating a choropleth map in qgis (explain how i created a choropleth map using qgis interface)
- 
+-- Step 2: Populate the new geom column using lat and lon columns
+
+```UPDATE public.stations
+SET geom = ST_SetSRID(ST_MakePoint(station_lon, station_lat), 4326);
+```
+
+-- Step 3: Transform the geometry to UTM Zone 18N projection (EPSG: 32618)
+
+```ALTER TABLE public.stations
+ALTER COLUMN geom 
+TYPE geometry(Point, 32618)
+USING ST_Transform(geom, 32618);
+```
+
+## Transforming Station Data to Geospatial Format (Referred to 7.sql)
+
+-- Check out the spatial_ref_sys added by PostGIS where SRID = 32618
+
+```select * from spatial_ref_sys
+where srid = 32618;
+```
+-- Find out what SRID is currently being used by the 'nyct2020' table
+
+```select find_srid('public', 'nyct2020', 'wkb_geometry');
+```
+
+### Geospatial Transformation Queries
+  
  ## Spatial analysis: identifying nearby stations with a  buffer (Referred to 8.sql)
 
+ -- Goal: determine how many bike trips started in each census tract.
+
+-- Step 1: assign each bike station to the appropriate census tract using a spatial join
+
+```SELECT 
+    s.station_id, 
+    nyct.id, 
+    s.geom
+FROM 
+    stations AS s
+JOIN 
+    nyct2020 AS nyct 
+ON 
+    ST_Within(s.geom,nyct.wkb_geometry);
+```
+
+-- Step 2: joining stations with trip data
+
+```WITH station_census AS (
+	SELECT 
+	    s.station_id, 
+	    nyct.id, 
+	    s.geom
+	FROM 
+	    stations AS s
+	JOIN 
+	    nyct2020 AS nyct 
+	ON 
+	    ST_Within(s.geom,nyct.wkb_geometry)
+)
+SELECT 
+    t.ride_id, 
+    t.half_hour_starttime, 
+    sc.id, 
+    t.start_station_id
+FROM 
+    trip_data AS t
+LEFT JOIN 
+    station_census AS sc
+ON 
+    t.start_station_id = sc.station_id;
+```
+   
+-- Step 3: grouping and counting trips by census tract 
+
+```WITH station_census AS (
+	SELECT 
+	    s.station_id, 
+	    nyct.id, 
+	    s.geom, 
+	    nyct.wkb_geometry
+	FROM 
+	    stations AS s
+	JOIN 
+	    nyct2020 AS nyct 
+	ON 
+	    ST_Within(s.geom,nyct.wkb_geometry)
+)
+SELECT 
+    sc.id, 
+    COUNT(t.ride_id) AS trip_count, 
+    sc.wkb_geometry
+FROM 
+    trip_data AS t
+LEFT JOIN 
+    station_census AS sc
+ON 
+    t.start_station_id = sc.station_id
+GROUP BY 
+    sc.id, sc.wkb_geometry
+ORDER BY 
+    trip_count DESC;
+```
+    
+-- Step 4: save as table for visualization
+
+```CREATE TABLE ct_trip_count AS
+WITH station_census AS (
+	SELECT 
+	    s.station_id, 
+	    nyct.id, 
+	    s.geom, 
+	    nyct.wkb_geometry
+	FROM 
+	    stations AS s
+	JOIN 
+	    nyct2020 AS nyct 
+	ON 
+	    ST_Within(s.geom,nyct.wkb_geometry)
+)
+SELECT 
+    sc.id, 
+    COUNT(t.ride_id) AS trip_count, 
+    sc.wkb_geometry
+FROM 
+    trip_data AS t
+LEFT JOIN 
+    station_census AS sc
+ON 
+    t.start_station_id = sc.station_id
+GROUP BY 
+    sc.id, sc.wkb_geometry
+ORDER BY 
+    trip_count DESC;
+    ```
 
  ## Optimizing Van Routes for Bike Station Replenishment (Referred to 9.sql)
 
@@ -220,24 +333,24 @@ ADD COLUMN geom geometry(Point, 4326);
 
 ```sql
 -- Business goal: optimize van routes for replenishing bike stations
--- Task: create a buffer of 1 kilometers around the top 3 bike stations where most of the trips started from,
----- and perform a spatial join to analyze which nearby stations fall within a 1 km radius for easy servicing
--- hint: use ST_Buffer() and ST_Intersects() functions from PostGIS
+-- Task: create a buffer of 1 kilometer around the top 3 bike stations where most of the trips started from, and perform a spatial join to analyze which nearby stations fall within a 1 km radius for easy servicing
 
 -- Step 1: Identify top 3 stations where most trips started from
-SELECT start_station_id, COUNT(*) AS total_trips
+
+```SELECT start_station_id, COUNT(*) AS total_trips
 FROM public.trip_data
 GROUP BY start_station_id
 ORDER BY total_trips DESC
 LIMIT 3;
-
+```
 -- Explanation:
 -- This query identifies the top 3 stations with the highest number of starting trips.
 -- It groups trips by start_station_id, counts the trips for each station,
 -- orders them in descending order based on trip count, and limits the result to the top 3.
 
 -- Step 2: Create buffers around top 3 stations
-WITH top_stations AS (
+
+```WITH top_stations AS (
     SELECT station_id, geom
     FROM public.stations
     WHERE station_id IN (SELECT start_station_id
@@ -248,14 +361,15 @@ WITH top_stations AS (
 )
 SELECT station_id, ST_Buffer(geom, 1000) AS buffer_geom -- buffer of 1 km
 FROM top_stations;
-
+```
 -- Explanation:
 -- This query creates a 1km buffer around the geometry of the top 3 stations identified in Step 1.
 -- It uses a CTE (Common Table Expression) to select the top 3 stations and then uses ST_Buffer()
 -- to create a buffer of 1000 meters (1 km) around each station's geometry.
 
 -- Step 3: Perform spatial join
-WITH top_station_buffers AS (
+
+```WITH top_station_buffers AS (
     SELECT station_id, ST_Buffer(geom, 1000) AS buffer_geom
     FROM public.stations
     WHERE station_id IN (SELECT start_station_id
@@ -269,7 +383,7 @@ FROM public.stations s
 JOIN top_station_buffers tsb
 ON ST_Intersects(s.geom, tsb.buffer_geom)
 ORDER BY top_station_id;
-
+```
 -- Explanation:
 -- This query performs a spatial join between the stations table and the buffered top 3 stations.
 -- It uses a CTE to create the buffers and then uses ST_Intersects() to find stations
@@ -288,7 +402,7 @@ This section explains an SQL query used to group trip data by both temporal (hal
 -- task: create a new table named spatio_temporal_visualization that includes
 --       total trip count by census tract and half hour intervals
 
-create table spatio_temporal_visualization as
+```create table spatio_temporal_visualization as
 select half_hour_starttime,
     nyct2020.id as census_tract,
     nyct2020.wkb_geometry as geom,
@@ -300,9 +414,9 @@ group by half_hour_starttime, census_tract
 order by census_tract, half_hour_starttime;
 ```
 
-## Visualize time series data in qgis with choropleth map
-add explanation on how I used time manager plugin to create a visualization of the choropleth map and convert it into a video.
+## Visualize time series data in QGIS with animated Choropleth Map
+I created a time-series data visualization using QGIS's Time Manager plugin to animate a choropleth map.
 
-### Final Result
+**Final Result:**
 <video src="https://github.com/user-attachments/assets/d20f7af8-2083-4a39-814f-51caa5fa1abe" controls width="640"></video>
 
