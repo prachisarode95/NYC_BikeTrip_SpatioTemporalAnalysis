@@ -108,4 +108,4 @@ This project utilizes PostgreSQL with PostGIS to analyze New York City bike-shar
 * **`Data/Processed`:** Contains the results after executing SQL queries in QGIS DB Manager ensuring the columns are suitable for visualization (e.g., time intervals, counts, geometries).
 * **`QGIS_Project`:** The QGIS project file, is pre-configured to visualize the analysis results.
 * **`Data_Visualization`:** Contains a Python script for generating additional visualizations based on the processed data (CSV file).
-* **`Docs`:** Contains detailed project workflow, focusing on the QGIS/PostGIS integration and explanation of the SQL queries and their purpose.
+* **`Docs`:** Contains detailed project workflow, focusing on the QGIS/PostGIS integration, explanation of the SQL queries and their purpose, and data visualizations.
