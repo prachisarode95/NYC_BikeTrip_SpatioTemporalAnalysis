@@ -373,8 +373,8 @@ GROUP BY half_hour_starttime, census_tract
 ORDER BY census_tract, half_hour_starttime;
 ```
 
-## Visualize time series data in QGIS with animated Choropleth Map
-I created a time-series data visualization using QGIS's Time Manager plugin to animate a choropleth map.
+## Visualize Time-Series data in QGIS with Animated Choropleth Map
+I created a time-series data visualization using QGIS's 'Time Manager' plugin to animate a choropleth map.
 
 **Final Result:**
 <video src="https://github.com/user-attachments/assets/d20f7af8-2083-4a39-814f-51caa5fa1abe" controls width="640"></video>
