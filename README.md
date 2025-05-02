@@ -106,8 +106,10 @@ ON
 
 ## 📊 Visualizations
 
-* **QGIS:** Used DB Manager to execute spatial queries and visualize data.
 * **Time Manager Plugin:** Animated choropleth maps showing trip count evolution.
+
+[🎥 Watch video preview](https://github.com/user-attachments/assets/c84d7930-4373-4533-92cc-fbde3ea1ac22)
+
 * **Python:** Additional bar plots and time series charts using Pandas & Matplotlib.
 
 ![Chart](https://github.com/user-attachments/assets/92d38bc1-800b-4215-a213-8737afc1149c)
