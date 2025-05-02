@@ -4,7 +4,7 @@ This project analyzes rush hour bike demand patterns in New York City using **Po
 
 ---
 
-**Project Overview:**
+## Project Overview
 
 * **Data Review:** I reviewed the provided data, which aimed to understand bike demand patterns during rush hours in New York City.
 * **Dataset Acquisition and Processing:** I utilized two primary datasets. The first, containing bike station information, consisted of two files: "Stations" (station ID, latitude, and longitude) and trip data (trip ID, start/end times, bike type, and start/end station IDs). By joining these files, I mapped each trip's geographical path, revealing station usage and spatial patterns. I focused on data from September 17, 2024, demonstrating a methodology applicable to various time frames and zones.
@@ -25,7 +25,7 @@ This project analyzes rush hour bike demand patterns in New York City using **Po
 
 ---
 
-**Exploration of US census data and NYC stations & trip data:**
+## Exploration of US census data and NYC stations & trip data
 
 This project analyzes New York City rush hour bike demand using New York City census tract boundary data and synthetic trip data.
 
