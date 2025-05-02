@@ -110,7 +110,7 @@ ON
 * **Time Manager Plugin:** Animated choropleth maps showing trip count evolution.
 * **Python:** Additional bar plots and time series charts using Pandas & Matplotlib.
 
-![QGIS Example](./images/qgis_map.png)
+![Chart](https://github.com/user-attachments/assets/92d38bc1-800b-4215-a213-8737afc1149c)
 
 ---
 
