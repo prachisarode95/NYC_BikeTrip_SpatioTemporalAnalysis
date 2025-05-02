@@ -1,4 +1,4 @@
-# 🌿 NYC Rush Hour Bike Demand Analysis using PostGIS
+#  🚴 NYC Rush Hour Bike Demand Analysis using PostGIS
 
 This project analyzes rush hour bike demand patterns in New York City using **PostgreSQL + PostGIS**, **QGIS**, and **Python**. Inspired by a LinkedIn Learning course on spatial data science with PostgreSQL, the goal was to practice and demonstrate advanced spatio-temporal data analysis and geospatial visualization using real-world-like synthetic datasets.
 
