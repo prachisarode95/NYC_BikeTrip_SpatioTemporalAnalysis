@@ -1,6 +1,8 @@
-# NYC Rush Hour Bike Demand Analysis with PostGIS
+# 🌿 NYC Rush Hour Bike Demand Analysis using PostGIS
 
-This project is about the analysis of spatio-temporal patterns in New York City bike trip data using QGIS, and PostgreSQL. The study focuses on leveraging the QGIS DB Manager plugin to run PostGIS queries and visualize the results directly within QGIS. 
+This project analyzes rush hour bike demand patterns in New York City using **PostgreSQL + PostGIS**, **QGIS**, and **Python**. Inspired by a LinkedIn Learning course on spatial data science with PostgreSQL, the goal was to practice and demonstrate advanced spatio-temporal data analysis and geospatial visualization using real-world-like synthetic datasets.
+
+---
 
 **Project Overview:**
 
@@ -11,12 +13,17 @@ This project is about the analysis of spatio-temporal patterns in New York City 
 * **Spatial and Temporal Analysis:** I performed spatial and temporal analysis using SQL queries within PostGIS, and visualized the results using QGIS and Python. This allowed me to discover and display the patterns of bike usage during rush hour.
 * **Visualization:** I created visualizations using Python to show the results of the SQL queries.
 
-**Objectives:**
+---
 
-1. Import and manage NYC bike trip data in a PostgreSQL/PostGIS database.
+## 📊 Project Objectives
+
+1. Import and manage NYC bike trip data using a PostgreSQL/PostGIS database.
 2. Perform spatial and temporal analysis using SQL queries within the QGIS DB Manager.
-3. Visualize the analysis results directly in QGIS, highlighting spatio-temporal patterns.
-4. Create informative visualizations using Python based on the SQL query outputs.
+3. Integrate US Census Tract boundaries to generalize bike demand patterns.
+4. Visualize analysis results with QGIS and Python.
+5. Apply spatial joins, time grouping, projections, and buffer analysis for data-driven planning.
+
+---
 
 **Exploration of US census data and NYC stations & trip data:**
 
@@ -28,84 +35,159 @@ This project analyzes New York City rush hour bike demand using New York City ce
 
 Census tracts were chosen over other geographic boundaries (e.g., neighborhoods, census block groups) because they offer a standardized, statistically reliable approach to analyzing city areas. Neighborhood definitions are less consistent and less suitable for precise data-driven analysis. Using census tracts ensures accuracy and compatibility with other datasets, facilitating informed decisions regarding bike supply and demand management.
 
-**Tech Stack:**
+---
 
-* **QGIS:** Open-source Geographic Information System for visualization
-* **PostGIS:** Spatial database extension for PostgreSQL, used within QGIS DB Manager.
-* **PostgreSQL:** Database used to store and query spatial data.
-* **Python (Pandas, Matplotlib):** For additional data visualization based on SQL query results.
+## 📅 Dataset Overview
 
-**Setup and Installation:**
+### 1. **Bike Station and Trip Data (Synthetic)**
 
-1.  **Clone the repository:**
+* **stations.csv**: Contains station ID, latitude, and longitude.
+* **trip\_data.csv**: Contains ride ID, bike type, start/end times, and station IDs.
+* Focused on trips from **September 17, 2024**.
 
-    ```bash
-    git clone [https://github.com/yourusername/NYC_BikeTrip_SpatioTemporalAnalysis.git](https://www.google.com/search?q=https://github.com/yourusername/NYC_BikeTrip_SpatioTemporalAnalysis.git)
-    cd NYC_BikeTrip_SpatioTemporalAnalysis
-    ```
+### 2. **2020 US Census Tract Boundaries (NYC)**
 
-2.  **Install PostgreSQL and PostGIS:**
+* Source: US Census Bureau
+* Contains geometry and attributes like borough names and tract IDs
 
-    * Install PostgreSQL and PostGIS.
-    * Create a database (e.g., `nyc_bike_trips`) and enable the PostGIS extension:
+**Why Census Tracts?**
 
-        ```sql
-        CREATE DATABASE nyc_bike_trips;
-        \c nyc_bike_trips;
-        CREATE EXTENSION postgis;
-        ```
+* Chosen for their standardization and statistical reliability.
+* Allow aggregation of trips to analyze broader spatial trends.
+* Superior to neighborhoods or block groups for consistent and comparable spatial units.
 
-3.  **Install QGIS:**
+---
 
-    * Install QGIS, ensuring that PostGIS is enabled in your PostgreSQL connection and the DB Manager Plugin is installed.
+## 🎓 Tools & Technologies
 
-4.  **Load Data into PostGIS using QGIS DB Manager:**
+| Tool           | Purpose                                           |
+| -------------- | ------------------------------------------------- |
+| **PostgreSQL** | Primary database for tabular and spatial data     |
+| **PostGIS**    | Enables spatial functions and geometry processing |
+| **QGIS**       | Spatial data visualization, time-based mapping    |
+| **Python**     | Data processing and charting (Pandas, Matplotlib) |
 
-    * Open QGIS and connect to the PostgreSQL database.
-    * Use the DB Manager plugin to import the `Data/Raw/stations.csv` and `Data/Raw/trip_data.csv` into a PostgreSQL table and the `Data/Raw/nyct2020.geojson` data into a PostGIS table.
+---
 
-5.  **Run SQL Queries in QGIS DB Manager:**
+## 📒 Key Workflows & Highlights
 
-    * Copy and paste the SQL queries from `PostGIS_Queries/1.sql` into the QGIS DB Manager query window.
-    * Execute the queries and save the results as a CSV file (`Data/Processed/half_hour_starttime_count.csv`).
+* Created `stations` and `trip_data` tables with spatial geometry columns.
+* Added PostGIS extension and reprojected geometries to UTM Zone 18N (EPSG:32618).
+* Converted start times to half-hour intervals using `DATE_TRUNC()` and `EXTRACT()`.
+* Spatially joined bike stations with census tracts using `ST_Within()`.
+* Aggregated trip counts by tract and time interval.
+* Identified top bike stations and used buffer analysis to find nearby serviceable stations.
 
-6.  **Open QGIS Project:**
+### Example Query: Time-based Aggregation
 
-    * Open `QGIS_Project/spatio_temporal_analysis.qgs` in QGIS.
-    * Add the `half_hour_starttime.csv` as a layer to visualize the results.
+```sql
+SELECT half_hour_starttime, COUNT(*) AS trip_count
+FROM public.trip_data
+GROUP BY half_hour_starttime
+ORDER BY trip_count DESC;
+```
 
-7.  **Run Python Visualization Script (Optional):**
+### Example Query: Spatial Join
 
-    * Create a virtual environment:
+```sql
+SELECT 
+    s.station_id, 
+    nyct.id, 
+    s.geom
+FROM 
+    stations AS s
+JOIN 
+    nyct2020 AS nyct 
+ON 
+    ST_Within(s.geom,nyct.wkb_geometry);
+```
 
-        ```bash
-        python3 -m venv venv
-        source venv/bin/activate  # On macOS/Linux
-        venv\Scripts\activate  # On Windows
-        ```
+---
 
-    * Install dependencies:
+## 📊 Visualizations
 
-        ```bash
-        pip install -r requirements.txt
-        ```
+* **QGIS:** Used DB Manager to execute spatial queries and visualize data.
+* **Time Manager Plugin:** Animated choropleth maps showing trip count evolution.
+* **Python:** Additional bar plots and time series charts using Pandas & Matplotlib.
 
-    * Run the Python script:
+![QGIS Example](./images/qgis_map.png)
 
-        ```bash
-        python scripts/visualization.py
-        ```
+---
+
+## 📆 Setup Instructions
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/yourusername/NYC_BikeRush_PostGIS.git
+cd NYC_BikeRush_PostGIS
+```
+
+### 2. Install PostgreSQL and PostGIS
+
+```sql
+CREATE DATABASE nyc_bike_trips;
+\c nyc_bike_trips;
+CREATE EXTENSION postgis;
+```
+
+### 3. Install QGIS and Python Requirements
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Load Data Using QGIS DB Manager
+
+* Load `stations.csv`, `trip_data.csv`, and `nyct2020.geojson`
+
+### 5. Execute SQL Scripts
+
+* Run SQL files in `PostGIS_Queries/` using QGIS DB Manager
+
+### 6. Visualize Results
+
+* Use QGIS project file: `QGIS_Project/spatio_temporal_analysis.qgs`
+* Run Python visualizations: `python scripts/visualization.py`
+
+---
+
+## 💼 Folder Structure
+
+```
+.
+├── Data/
+│   ├── Raw/                # Original input files
+│   ├── Processed/          # CSV output from SQL queries
+├── PostGIS_Queries/        # SQL scripts for each analysis step
+├── QGIS_Project/           # Ready-to-use QGIS file
+├── Data_Visualization/     # Python plots from SQL outputs
+├── Docs/                   # Project explanation and methodology
+├── requirements.txt        # Python packages list
+```
+
+---
+
+## 🚀 Project Outcomes
+
+* Mapped and understood NYC rush hour bike demand distribution
+* Combined census data with station-level trip data for tract-level insights
+* Identified peak hours and busiest stations
+* Proposed buffer-based bike repositioning strategy
+* Created visual outputs for use in presentations or dashboards
+
+---
+
+## 👤 Author
+
+**Prachi Sarode**
+Cartographer & GIS Analyst | Spatial Data Science Enthusiast
+[LinkedIn](https://www.linkedin.com/in/prachisarode95)
+
+---
+
+> This project follows and builds upon the LinkedIn Learning course "PostgreSQL: Spatial Data Science Project," applying the principles in a hands-on geospatial analytics workflow for portfolio development.
 
 **Conclusion:**
 
 This project utilizes PostgreSQL with PostGIS to analyze New York City bike-share data. PostGIS extends PostgreSQL's capabilities to handle geospatial data, allowing us to store bike station locations as points and census tracts as polygons. This enables spatial queries for grouping trip data geographically by identifying bike station types within each census tract. PostgreSQL's scalability and robust SQL support are essential for managing large datasets and performing complex spatial analyses, addressing real-world optimization challenges like citywide bike availability. We will use QGIS, an open-source tool, to visualize geospatial data and patterns, creating animations to illustrate trip pattern evolution. The workflow involves loading bike, trip, and station data into PostgreSQL, performing spatial analysis with SQL and PostGIS, and leveraging QGIS for data interaction and visualization. Python, with Pandas and Matplotlib, will also be used for further data visualization based on SQL query results. This hands-on experience is crucial for tackling large-scale data and geospatial challenges.
-
-**Usage Instructions:**
-
-* **`requirements.txt`:** Contains minimal Python dependencies to run the script
-* **`PostGIS_Queries`:** Contains the SQL queries used to analyze the bike trip data within QGIS DB Manager.
-* **`Data/Raw`:** Contains raw data files (stations.csv, trip_data.csv, nyct2020.geojson).
-* **`Data/Processed`:** Contains the results after executing SQL queries in QGIS DB Manager ensuring the columns are suitable for visualization (e.g., time intervals, counts, geometries).
-* **`QGIS_Project`:** The QGIS project file, is pre-configured to visualize the analysis results.
-* **`Data_Visualization`:** Contains a Python script for generating additional visualizations based on the processed data (CSV file).
-* **`Docs`:** Contains detailed project workflow, focusing on the QGIS/PostGIS integration, explanation of the SQL queries and their purpose, and data visualizations.
