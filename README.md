@@ -183,7 +183,7 @@ pip install -r requirements.txt
 ## 👤 Author
 
 **Prachi Sarode**
-Cartographer & GIS Analyst | Spatial Data Science Enthusiast
+GIS Analyst | Spatial Data Science Enthusiast
 [LinkedIn](https://www.linkedin.com/in/prachisarode95)
 
 ---
