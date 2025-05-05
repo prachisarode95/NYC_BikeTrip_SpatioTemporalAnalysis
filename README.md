@@ -1,6 +1,6 @@
 #  🚴 NYC Rush Hour Bike Demand Analysis using PostGIS
 
-This project analyzes rush hour bike demand patterns in New York City using **PostgreSQL + PostGIS**, **QGIS**, and **Python**. Inspired by a LinkedIn Learning course on spatial data science with PostgreSQL, the goal was to practice and demonstrate advanced spatio-temporal data analysis and geospatial visualization using real-world-like synthetic datasets.
+Based on the LinkedIn Learning course ["Hands-On PostgreSQL Project: Spatial Data Science"](https://www.linkedin.com/learning/hands-on-postgresql-project-spatial-data-science), this project applies advanced spatio-temporal analysis and geospatial visualization techniques to a synthetic but realistic urban dataset. It showcases proficiency in spatial SQL, geospatial data modeling, interactive map creation, and Python-based spatial analytics—all essential for real-world geospatial workflows.
 
 ---
 
@@ -183,13 +183,11 @@ pip install -r requirements.txt
 ## 👤 Author
 
 **Prachi Sarode**
-GIS Analyst | Spatial Data Science Enthusiast
+GIS Analyst | Remote Sensing Enthusiast | Spatial Data Science Learner
 [LinkedIn](https://www.linkedin.com/in/prachisarode95)
 
 ---
 
-> This project follows and builds upon the LinkedIn Learning course "PostgreSQL: Spatial Data Science Project," applying the principles in a hands-on geospatial analytics workflow for portfolio development.
-
 **Conclusion:**
 
-This project utilizes PostgreSQL with PostGIS to analyze New York City bike-share data. PostGIS extends PostgreSQL's capabilities to handle geospatial data, allowing us to store bike station locations as points and census tracts as polygons. This enables spatial queries for grouping trip data geographically by identifying bike station types within each census tract. PostgreSQL's scalability and robust SQL support are essential for managing large datasets and performing complex spatial analyses, addressing real-world optimization challenges like citywide bike availability. We will use QGIS, an open-source tool, to visualize geospatial data and patterns, creating animations to illustrate trip pattern evolution. The workflow involves loading bike, trip, and station data into PostgreSQL, performing spatial analysis with SQL and PostGIS, and leveraging QGIS for data interaction and visualization. Python, with Pandas and Matplotlib, will also be used for further data visualization based on SQL query results. This hands-on experience is crucial for tackling large-scale data and geospatial challenges.
+By harnessing PostgreSQL with PostGIS, this project delivers actionable insights from NYC bike‑share data mapping stations to census tracts and optimizing bike availability across neighborhoods. QGIS animations and Python visualizations bring spatial patterns to life, while robust SQL analyses tackle large‑scale geospatial challenges head‑on. The result is a data‑driven framework that informs smarter urban mobility solutions and demonstrates proficiency in end‑to‑end GIS workflows.
