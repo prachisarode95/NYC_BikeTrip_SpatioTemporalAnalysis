@@ -180,14 +180,6 @@ pip install -r requirements.txt
 
 ---
 
-## 👤 Author
-
-**Prachi Sarode**
-GIS Analyst | Remote Sensing Enthusiast | Spatial Data Science Learner
-[LinkedIn](https://www.linkedin.com/in/prachisarode95)
-
----
-
 **Conclusion:**
 
 By harnessing PostgreSQL with PostGIS, this project delivers actionable insights from NYC bike‑share data mapping stations to census tracts and optimizing bike availability across neighborhoods. QGIS animations and Python visualizations bring spatial patterns to life, while robust SQL analyses tackle large‑scale geospatial challenges head‑on. The result is a data‑driven framework that informs smarter urban mobility solutions and demonstrates proficiency in end‑to‑end GIS workflows.
