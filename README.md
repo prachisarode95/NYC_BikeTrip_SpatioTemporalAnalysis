@@ -1,4 +1,4 @@
-#  🚴 NYC Rush Hour Bike Demand Analysis using PostGIS
+# NYC Rush Hour Bike Demand Analysis using PostGIS
 
 Based on the LinkedIn Learning course ["Hands-On PostgreSQL Project: Spatial Data Science"](https://www.linkedin.com/learning/hands-on-postgresql-project-spatial-data-science), this project applies advanced spatio-temporal analysis and geospatial visualization techniques to a synthetic but realistic urban dataset. It showcases proficiency in spatial SQL, geospatial data modeling, interactive map creation, and Python-based spatial analytics—all essential for real-world geospatial workflows.
 
@@ -10,12 +10,12 @@ Based on the LinkedIn Learning course ["Hands-On PostgreSQL Project: Spatial Dat
 * **Dataset Acquisition and Processing:** I utilized two primary datasets. The first, containing bike station information, consisted of two files: "Stations" (station ID, latitude, and longitude) and trip data (trip ID, start/end times, bike type, and start/end station IDs). By joining these files, I mapped each trip's geographical path, revealing station usage and spatial patterns. I focused on data from September 17, 2024, demonstrating a methodology applicable to various time frames and zones.
 * **Census Tract Integration:** I incorporated the 2020 Census Tract Boundary File for New York City from the US Census Bureau. This dataset provided geometry columns defining borough boundaries, tract IDs, and other attributes.
 * **Rationale for Census Tracts:** I strategically chose census tracts over other geographic boundaries (neighborhoods, block groups) for their standardized, statistically reliable approach to spatial analysis. Aggregating trips into census tracts allowed me to identify broader demand trends that station-level data alone could not reveal. This enabled a more accurate understanding of demand fluctuations across larger areas, aiding in strategic bike repositioning.
-* **Spatial and Temporal Analysis:** I performed spatial and temporal analysis using SQL queries within PostGIS, and visualized the results using QGIS and Python. This allowed me to discover and display the patterns of bike usage during rush hour.
+* **Spatial and Temporal Analysis:** I performed spatial and temporal analysis using SQL queries within PostGIS and visualized the results using QGIS and Python. This allowed me to discover and display the patterns of bike usage during rush hour.
 * **Visualization:** I created visualizations using Python to show the results of the SQL queries.
 
 ---
 
-## 📊 Project Objectives
+## Project Objectives
 
 1. Import and manage NYC bike trip data using a PostgreSQL/PostGIS database.
 2. Perform spatial and temporal analysis using SQL queries within the QGIS DB Manager.
@@ -37,7 +37,7 @@ Census tracts were chosen over other geographic boundaries (e.g., neighborhoods,
 
 ---
 
-## 📅 Dataset Overview
+## Dataset Overview
 
 ### 1. **Bike Station and Trip Data (Synthetic)**
 
@@ -58,7 +58,7 @@ Census tracts were chosen over other geographic boundaries (e.g., neighborhoods,
 
 ---
 
-## 🎓 Tools & Technologies
+## Tools & Technologies
 
 | Tool           | Purpose                                           |
 | -------------- | ------------------------------------------------- |
@@ -69,7 +69,7 @@ Census tracts were chosen over other geographic boundaries (e.g., neighborhoods,
 
 ---
 
-## 📒 Key Workflows & Highlights
+## Key Workflows & Highlights
 
 * Created `stations` and `trip_data` tables with spatial geometry columns.
 * Added PostGIS extension and reprojected geometries to UTM Zone 18N (EPSG:32618).
@@ -77,38 +77,13 @@ Census tracts were chosen over other geographic boundaries (e.g., neighborhoods,
 * Spatially joined bike stations with census tracts using `ST_Within()`.
 * Aggregated trip counts by tract and time interval.
 * Identified top bike stations and used buffer analysis to find nearby serviceable stations.
-
-### Example Query: Time-based Aggregation
-
-```sql
-SELECT half_hour_starttime, COUNT(*) AS trip_count
-FROM public.trip_data
-GROUP BY half_hour_starttime
-ORDER BY trip_count DESC;
-```
-
-### Example Query: Spatial Join
-
-```sql
-SELECT 
-    s.station_id, 
-    nyct.id, 
-    s.geom
-FROM 
-    stations AS s
-JOIN 
-    nyct2020 AS nyct 
-ON 
-    ST_Within(s.geom,nyct.wkb_geometry);
-```
-
 ---
 
-## 📊 Visualizations
+## Visualizations
 
 * **Time Manager Plugin:** Animated choropleth maps showing trip count evolution.
 
-[🎥 Watch video preview](https://github.com/user-attachments/assets/c84d7930-4373-4533-92cc-fbde3ea1ac22)
+[Watch video preview](https://github.com/user-attachments/assets/c84d7930-4373-4533-92cc-fbde3ea1ac22)
 
 * **Python:** Additional bar plots and time series charts using Pandas & Matplotlib.
 
@@ -116,7 +91,7 @@ ON
 
 ---
 
-## 📆 Setup Instructions
+## Setup Instructions
 
 ### 1. Clone Repository
 
@@ -154,10 +129,9 @@ pip install -r requirements.txt
 
 ---
 
-## 💼 Folder Structure
+## Folder Structure
 
 ```
-.
 ├── Data/
 │   ├── Raw/                # Original input files
 │   ├── Processed/          # CSV output from SQL queries
@@ -170,7 +144,7 @@ pip install -r requirements.txt
 
 ---
 
-## 🚀 Project Outcomes
+## Project Outcomes
 
 * Mapped and understood NYC rush hour bike demand distribution
 * Combined census data with station-level trip data for tract-level insights
